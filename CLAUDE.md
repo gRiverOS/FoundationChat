@@ -48,7 +48,7 @@ git -c credential.helper= -c 'credential.helper=!gh auth git-credential' push
 
 ## Arquitectura
 
-`FoundationChatApp` es un `TabView` con tres pestañas independientes, cada una con su propia `LanguageModelSession`:
+`FoundationChatApp` es un `TabView` con tres pestañas independientes, cada una envuelta en `AvailabilityGate` (verifica `SystemLanguageModel` antes de mostrar la pantalla) y con su propia `LanguageModelSession`. Pantallas nuevas que usen el modelo también van dentro de `AvailabilityGate`. Para probar estados no disponibles: `SIMCTL_CHILD_FM_SIMULATE=notEligible|notEnabled|notReady xcrun simctl launch …` (solo DEBUG).
 
 - **Chat** (`ContentView` + `ChatViewModel`): el view model `@MainActor @Observable` es dueño de la sesión y la recrea con `ChatViewModel.makeSession()`, que registra las tools (`PantryTool`, `DateTimeTool`). Toda creación de sesión del chat debe pasar por ahí (o incluir las tools) para no perderlas. Maneja streaming, `prewarm()`, y ante `exceededContextWindowSize` llama a `condenseContext()`: resume con una sesión aparte, crea una sesión nueva con el resumen en las instructions y reintenta el prompt. `TranscriptView` muestra `session.transcript`.
 - **Recetas** (`RecipeView` + `Recipe`): guided generation con `@Generable`/`@Guide`, stream de `Recipe.PartiallyGenerated`.

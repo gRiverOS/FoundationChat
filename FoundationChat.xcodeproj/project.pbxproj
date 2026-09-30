@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2B0E0BDA2D3E5D5B9D62A173 /* AvailabilityGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7AB461A1A02FD6EAA577312 /* AvailabilityGate.swift */; };
 		34E12E9A886B61BC5BA84FDD /* TranscriptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9554E74DDD98A74B99A0E65 /* TranscriptView.swift */; };
 		3A61A7D472BC9B4575EB5770 /* OptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6550B73B851CE08D5851CC6 /* OptionsView.swift */; };
 		3ABB86BB5D905099CCD14969 /* FoundationChatApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5F455D6D9508BF4E78F8C2 /* FoundationChatApp.swift */; };
@@ -27,6 +28,7 @@
 		AD5F455D6D9508BF4E78F8C2 /* FoundationChatApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoundationChatApp.swift; sourceTree = "<group>"; };
 		C8B7FDA9FB5884180E8DB68A /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
 		C9554E74DDD98A74B99A0E65 /* TranscriptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptView.swift; sourceTree = "<group>"; };
+		D7AB461A1A02FD6EAA577312 /* AvailabilityGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvailabilityGate.swift; sourceTree = "<group>"; };
 		E6550B73B851CE08D5851CC6 /* OptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsView.swift; sourceTree = "<group>"; };
 		F64964234D930C557070BF52 /* FoundationChat.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = FoundationChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -43,6 +45,7 @@
 		4B953A5F0557FE7CD7DCDC4E /* FoundationChat */ = {
 			isa = PBXGroup;
 			children = (
+				D7AB461A1A02FD6EAA577312 /* AvailabilityGate.swift */,
 				C8B7FDA9FB5884180E8DB68A /* ChatViewModel.swift */,
 				4991484D6B9355E1AA252A86 /* ContentView.swift */,
 				AD5F455D6D9508BF4E78F8C2 /* FoundationChatApp.swift */,
@@ -123,6 +126,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2B0E0BDA2D3E5D5B9D62A173 /* AvailabilityGate.swift in Sources */,
 				903F350C8D8E4E1C3099F917 /* ChatViewModel.swift in Sources */,
 				9F0BAE2FD2E6B02439404C01 /* ContentView.swift in Sources */,
 				3ABB86BB5D905099CCD14969 /* FoundationChatApp.swift in Sources */,

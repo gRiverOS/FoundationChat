@@ -27,7 +27,17 @@ open FoundationChat.xcodeproj
 ## Conceptos
 
 ### 1. Disponibilidad
-`SystemLanguageModel.default.availability` devuelve `.available` o `.unavailable(reason)` (`deviceNotEligible`, `appleIntelligenceNotEnabled`, `modelNotReady`). Siempre verificarlo y mostrar un fallback.
+Flujo obligatorio: **verificar disponibilidad → crear sesión → enviar prompt.**
+
+`SystemLanguageModel.default.availability` devuelve `.available` o `.unavailable(reason)`: `deviceNotEligible`, `appleIntelligenceNotEnabled`, `modelNotReady`. Incluir siempre un `case .unavailable:` genérico al final, por si Apple agrega razones nuevas.
+
+`AvailabilityGate` (`AvailabilityGate.swift`) envuelve **las tres pestañas**, así que ninguna llama al modelo sin verificar. Muestra un `ContentUnavailableView` distinto por cada razón.
+
+Probar los casos:
+- **Xcode:** Edit Scheme → Run → *Simulated Foundation Model Availability* (ojo: `xcodegen generate` regenera el scheme y borra ese ajuste).
+- **Terminal (override DEBUG propio):** `SIMCTL_CHILD_FM_SIMULATE=notEligible|notEnabled|notReady xcrun simctl launch <UDID> com.gustavo.FoundationChat`
+
+iOS 27 agrega `PrivateCloudComputeLanguageModel`, con su propia disponibilidad (`deviceNotEligible`, `systemNotReady`).
 
 ### 2. Sesión y streaming
 ```swift

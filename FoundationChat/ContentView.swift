@@ -7,18 +7,7 @@ struct ContentView: View {
 
     var body: some View {
         NavigationStack {
-            Group {
-                switch vm.availability {
-                case .available:
-                    chat
-                case .unavailable(let reason):
-                    ContentUnavailableView(
-                        "Modelo no disponible",
-                        systemImage: "brain",
-                        description: Text(describe(reason))
-                    )
-                }
-            }
+            chat
             .navigationTitle("Foundation Chat")
             .toolbar {
                 Menu("Sesión", systemImage: "ellipsis.circle") {
@@ -89,12 +78,4 @@ struct ContentView: View {
         }
     }
 
-    private func describe(_ reason: SystemLanguageModel.Availability.UnavailableReason) -> String {
-        switch reason {
-        case .deviceNotEligible: "Este dispositivo no soporta Apple Intelligence."
-        case .appleIntelligenceNotEnabled: "Activa Apple Intelligence en Ajustes (en el simulador lo toma de tu Mac)."
-        case .modelNotReady: "El modelo se está descargando. Intenta en un rato."
-        @unknown default: "Razón desconocida."
-        }
-    }
 }

@@ -28,11 +28,6 @@ final class ChatViewModel {
         session.prewarm()
     }
 
-    /// Estado del modelo on-device (Apple Intelligence debe estar activo).
-    var availability: SystemLanguageModel.Availability {
-        SystemLanguageModel.default.availability
-    }
-
     func send() async {
         let prompt = input.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !prompt.isEmpty, !isResponding else { return }
