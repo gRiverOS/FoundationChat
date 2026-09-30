@@ -7,6 +7,7 @@ struct FoundationChatApp: App {
             TabView {
                 Tab("Chat", systemImage: "bubble.left.and.bubble.right") { ContentView() }
                 Tab("Recetas", systemImage: "fork.knife") { RecipeView() }
+                Tab("Opciones", systemImage: "slider.horizontal.3") { OptionsView() }
             }
         }
     }
