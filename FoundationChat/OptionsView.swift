@@ -24,7 +24,7 @@ struct OptionsView: View {
         case .topP: .random(probabilityThreshold: topP)         // sortea entre los que suman P de probabilidad
         }
         return GenerationOptions(
-            sampling: sampling,
+            samplingMode: sampling,
             temperature: temperature,                           // >1 más creativo, <1 más conservador
             maximumResponseTokens: maxTokens                    // corta la respuesta al llegar al límite
         )

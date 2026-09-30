@@ -85,7 +85,7 @@ final class ChatViewModel {
             if let summary = try? await summarizer.respond(
                 to: history,
                 generating: ConversationSummary.self,
-                options: GenerationOptions(sampling: .greedy)
+                options: GenerationOptions(samplingMode: .greedy)
             ).content {
                 let facts = summary.userFacts.joined(separator: "; ")
                 seeded += "\nDatos del usuario: \(facts). Tema previo: \(summary.topic)."

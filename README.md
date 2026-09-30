@@ -48,7 +48,7 @@ for try await snapshot in session.streamResponse(to: prompt) {
     text = snapshot.content   // snapshot ACUMULADO, no delta
 }
 ```
-- **Instructions** (reglas del desarrollador) ≠ **prompt** (lo que pide el usuario).
+- **Instructions** (reglas del desarrollador) ≠ **prompt** (lo que pide el usuario). El modelo prioriza las instructions sobre el prompt, pero eso **no es una garantía de seguridad**: nunca meter input del usuario en las instructions (prompt injection).
 - **Single-turn vs multi-turn:** sesión nueva por pregunta = sin memoria (pestaña Opciones, resumen de contexto); misma sesión reutilizada = recuerda (Chat, sesión como propiedad del view model). Prueba real con `.greedy`:
 
   | Seguimiento a "¿Dónde viven los pingüinos?" | Single-turn | Multi-turn |
@@ -100,7 +100,7 @@ LanguageModelSession(tools: [PantryTool(), DateTimeTool()], instructions: ...)
 ### 5. GenerationOptions
 ```swift
 GenerationOptions(
-    sampling: .greedy,                    // determinista
+    samplingMode: .greedy,                // determinista (iOS 26: `sampling:`, deprecado en iOS 27)
            // .random(top: 40)            // top-k
            // .random(probabilityThreshold: 0.9)  // top-p
     temperature: 0.7,
@@ -115,6 +115,8 @@ session.respond(to: prompt, options: options)
 | Ideas, nombres, brainstorming | temperature 1.2+ |
 
 Resultado real: greedy → 3 respuestas idénticas; top-k 40 + temp 2.0 → 3 distintas.
+
+**Rango de temperature:** en la beta de iOS 26 (la del curso) había que usar valores entre 0 y 1, y 1.2 daba error. En iOS/macOS 27 funcionan 1.2 y 2.0 sin error (probado). iOS 27 además agrega `toolCallingMode` en `GenerationOptions`.
 
 **¿Es determinista?** El modelo sí: con la misma entrada calcula siempre la misma distribución de probabilidades. Lo aleatorio es el **sampling**, y el default de `LanguageModelSession` es aleatorio. Con `.greedy` la generación es determinista **ante exactamente la misma entrada** (mismas instructions, prompt e historial). Límites: una actualización del modelo con iOS puede cambiar las respuestas (no hacer tests que comparen texto exacto), y `.random(top:seed:)` da variedad reproducible sin garantía entre dispositivos o versiones.
 
@@ -136,7 +138,7 @@ Todos los errores pasan por `ModelErrors.message(for:)` (`ModelErrors.swift`), q
 - Crear la sesión no lanza; lanzan `respond` / `streamResponse`.
 
 ### 8. Rendimiento con Instruments
-Plantilla **Foundation Models** (Xcode 26+). Por línea de comandos:
+Plantilla **Foundation Models** (Xcode 26+). En la app: Xcode → Open Developer Tool → Instruments → Blank → agregar el instrument *Foundation Models*. Por línea de comandos:
 ```bash
 xcrun xctrace record --template "Foundation Models" --device <UDID> \
   --attach FoundationChat --time-limit 45s --output traces/fm.trace   # pide Enter: guarda prompts sin cifrar

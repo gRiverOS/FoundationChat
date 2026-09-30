@@ -56,6 +56,8 @@ git -c credential.helper= -c 'credential.helper=!gh auth git-credential' push
 
 `Tools.swift`: las tools corren fuera del main actor; reportan a `ToolLog.shared` (singleton `@MainActor`) con `await`, y `ContentView` lo muestra bajo el chat.
 
+API de iOS 27 vs. la del curso (iOS 26): `GenerationOptions(samplingMode:)` reemplaza a `sampling:` (deprecado); temperature > 1 es válida. Compilar revisando también las advertencias, no solo los errores.
+
 Errores: todo `catch` de llamadas al modelo usa `ModelErrors.message(for:)` y, para el overflow de contexto, `ModelErrors.isContextOverflow(_:)`. iOS 27 lanza `LanguageModelError` en vez de `LanguageModelSession.GenerationError`; `ModelErrors.swift` maneja ambos, no hacer `catch` directo sobre casos de `GenerationError`.
 
 Las instructions y descriptions están en español y son deliberadamente cortas: se envían en cada request (medido con Instruments). Las reglas de uso de un argumento van en su `@Guide`, no en las instructions; con eso el modelo eligió bien la categoría de la despensa, cosa que no logró con instructions largas. El modelo es chico (~3B) y el sampling por defecto es aleatorio: para restricciones duras, restringir en código (`@Generable`, `Arguments {}`) o usar `.greedy`.
