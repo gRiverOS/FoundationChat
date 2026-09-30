@@ -4,11 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Qué es
 
-App SwiftUI de práctica para el curso "Getting Started with Apple Foundation Models". Usa el modelo on-device de Apple Intelligence vía el framework `FoundationModels`. Sin dependencias externas, sin tests. El README tiene la explicación de cada concepto del curso.
+App SwiftUI de práctica para el curso "Getting Started with Apple Foundation Models". Usa el modelo on-device de Apple Intelligence vía el framework `FoundationModels`. Sin dependencias externas, sin tests ni linter: la verificación es compilar sin warnings y probar en el simulador. El README tiene la explicación de cada concepto del curso y la lista "Pendiente" (el backlog); al agregar un concepto o medición nueva, documentarlo ahí.
 
 ## Comandos
 
-El `.xcodeproj` se genera con XcodeGen desde `project.yml`: **no editar el `.xcodeproj` a mano**. Después de agregar o borrar archivos `.swift`, regenerar.
+El `.xcodeproj` se genera con XcodeGen desde `project.yml`: **no editar el `.xcodeproj` a mano**; los build settings van en `project.yml`. Después de agregar o borrar archivos `.swift`, regenerar y commitear también el `project.pbxproj` (está versionado).
 
 ```bash
 xcodegen generate
@@ -16,6 +16,7 @@ xcodegen generate
 # Build para el simulador iOS 27 (el único que funciona con este Mac, ver abajo)
 xcodebuild -project FoundationChat.xcodeproj -scheme FoundationChat \
   -destination 'id=409925DC-4CAC-4370-A567-28B1DF07717E' -derivedDataPath build-sim build
+# Para ver solo warnings/errores, agregar: 2>&1 | grep -E "(warning|error):"
 
 # Instalar y lanzar
 xcrun simctl install 409925DC-4CAC-4370-A567-28B1DF07717E build-sim/Build/Products/Debug-iphonesimulator/FoundationChat.app
