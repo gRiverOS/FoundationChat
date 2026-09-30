@@ -27,6 +27,14 @@ xcodebuild -project FoundationChat.xcodeproj -scheme FoundationChat \
 xcrun devicectl device install app --device 00008150-001518693AC0401C build/Build/Products/Debug-iphoneos/FoundationChat.app
 ```
 
+Profiling (plantilla Foundation Models; pide Enter porque guarda prompts sin cifrar, por eso `traces/` va en `.gitignore`):
+```bash
+echo "" | xcrun xctrace record --template "Foundation Models" --device 409925DC-4CAC-4370-A567-28B1DF07717E \
+  --attach FoundationChat --time-limit 45s --output traces/fm.trace
+xcrun xctrace export --input traces/fm.trace --xpath '/trace-toc/run/data/table[@schema="ModelInferenceTable"]'
+```
+El proceso `xctrace` puede quedar colgado tras "Output file saved"; matarlo con `pkill -f "xctrace record"`.
+
 Push a GitHub: la credencial HTTPS del keychain da 403, usar la de `gh` solo para ese comando:
 ```bash
 git -c credential.helper= -c 'credential.helper=!gh auth git-credential' push
@@ -50,4 +58,4 @@ git -c credential.helper= -c 'credential.helper=!gh auth git-credential' push
 
 Errores: todo `catch` de llamadas al modelo usa `ModelErrors.message(for:)` y, para el overflow de contexto, `ModelErrors.isContextOverflow(_:)`. iOS 27 lanza `LanguageModelError` en vez de `LanguageModelSession.GenerationError`; `ModelErrors.swift` maneja ambos, no hacer `catch` directo sobre casos de `GenerationError`.
 
-Las instructions y descriptions están en español. El modelo es chico (~3B): no confiar en el prompt para restricciones duras (eligió un argumento de enum equivocado pese a instrucciones explícitas); restringir en código con `@Generable`/`@Guide`.
+Las instructions y descriptions están en español y son deliberadamente cortas: se envían en cada request (medido con Instruments). Las reglas de uso de un argumento van en su `@Guide`, no en las instructions; con eso el modelo eligió bien la categoría de la despensa, cosa que no logró con instructions largas. El modelo es chico (~3B) y el sampling por defecto es aleatorio: para restricciones duras, restringir en código (`@Generable`, `Arguments {}`) o usar `.greedy`.

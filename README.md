@@ -64,7 +64,15 @@ struct PantryTool: Tool {
 LanguageModelSession(tools: [PantryTool(), DateTimeTool()], instructions: ...)
 ```
 - El modelo decide cuándo llamar según `name`, `description` e instructions.
-- **Aprendizaje:** el modelo on-device es conservador; con instrucciones vagas pregunta en vez de llamar la tool. Con instrucciones directas llama al tiro, pero **igual puede elegir mal un argumento** (pidió `abarrotes` en vez de `todo`). Lo crítico se restringe en código, no en el prompt.
+- **Aprendizaje (evolución de la despensa):**
+
+  | Versión | ¿Preguntó antes? | Categoría |
+  |---|---|---|
+  | Instructions vagas | Sí, dos veces | la eligió el usuario |
+  | Instructions largas y explícitas | No | `abarrotes` ❌ |
+  | Instructions cortas + regla en el `@Guide` del argumento | No | `todo` ✅ |
+
+  Un modelo chico sigue mejor una regla **pegada al campo que llena** (`@Guide`) que mezclada en las instructions. Aun así, con sampling aleatorio un acierto no garantiza el siguiente: lo crítico se restringe en código (`Arguments {}` vacío o `.greedy`).
 - `call` corre fuera del main actor (Swift 6): actualizar UI con `await`.
 
 ### 5. GenerationOptions
@@ -86,6 +94,8 @@ session.respond(to: prompt, options: options)
 
 Resultado real: greedy → 3 respuestas idénticas; top-k 40 + temp 2.0 → 3 distintas.
 
+**¿Es determinista?** El modelo sí: con la misma entrada calcula siempre la misma distribución de probabilidades. Lo aleatorio es el **sampling**, y el default de `LanguageModelSession` es aleatorio. Con `.greedy` la generación es determinista **ante exactamente la misma entrada** (mismas instructions, prompt e historial). Límites: una actualización del modelo con iOS puede cambiar las respuestas (no hacer tests que comparen texto exacto), y `.random(top:seed:)` da variedad reproducible sin garantía entre dispositivos o versiones.
+
 ### 6. Sesiones y contexto
 - `session.transcript` = memoria de la sesión (instructions, prompts, responses, tool calls/outputs). **Todo consume la ventana de contexto (~4K tokens).**
 - `session.prewarm()` al aparecer la pantalla → menos latencia en la 1.ª respuesta.
@@ -102,8 +112,33 @@ Todos los errores pasan por `ModelErrors.message(for:)` (`ModelErrors.swift`), q
 - Errores lanzados dentro de una tool llegan envueltos en `LanguageModelSession.ToolCallError`.
 - Crear la sesión no lanza; lanzan `respond` / `streamResponse`.
 
+### 8. Rendimiento con Instruments
+Plantilla **Foundation Models** (Xcode 26+). Por línea de comandos:
+```bash
+xcrun xctrace record --template "Foundation Models" --device <UDID> \
+  --attach FoundationChat --time-limit 45s --output traces/fm.trace   # pide Enter: guarda prompts sin cifrar
+xcrun xctrace export --input traces/fm.trace --toc                     # tablas: RequestTable, ModelInferenceTable, ToolTable…
+```
+`traces/` está en `.gitignore` porque los traces guardan prompts y respuestas en texto plano.
+
+Mediciones reales (simulador iOS 27, una muestra):
+
+| | Antes | Instructions cortas | Cambio |
+|---|---|---|---|
+| Sin tool: tokens de entrada | 340 | 209 | −39% |
+| Sin tool: duración | 1,64 s | 2,21 s | ruido (modelo frío tras relanzar) |
+| Con tool: tokens totales | 895 | 560 | −37% |
+| Con tool: duración | 3,27 s | 2,02 s | −38% |
+
+Lecciones:
+- Instructions + definiciones de tools se envían en **cada** request (~300 tokens fijos antes de optimizar).
+- Procesar el prompt tarda más que generar (1,20 s vs 0,44 s): achicar instructions y descriptions rinde más.
+- **Una tool = dos inferencias**: decidir la llamada + responder con el output en contexto → casi duplica la latencia.
+- `cached-tokens = 0`: el contexto no se reusó entre requests.
+- En el simulador la `ToolTable` sale vacía aunque la tool se llame.
+- Para conclusiones serias: ~5 repeticiones por caso, idealmente en dispositivo físico.
+
 ## Pendiente
 - [ ] Despensa confiable: `Arguments {}` vacío en vez de depender del argumento
 - [ ] Resumen de contexto con `@Generable`
-- [ ] Medir rendimiento con Instruments (plantilla Foundation Models)
 - [ ] Adapters
