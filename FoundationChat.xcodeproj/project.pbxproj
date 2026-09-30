@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		34E12E9A886B61BC5BA84FDD /* TranscriptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9554E74DDD98A74B99A0E65 /* TranscriptView.swift */; };
 		3A61A7D472BC9B4575EB5770 /* OptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6550B73B851CE08D5851CC6 /* OptionsView.swift */; };
 		3ABB86BB5D905099CCD14969 /* FoundationChatApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5F455D6D9508BF4E78F8C2 /* FoundationChatApp.swift */; };
 		903F350C8D8E4E1C3099F917 /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B7FDA9FB5884180E8DB68A /* ChatViewModel.swift */; };
@@ -23,6 +24,7 @@
 		6E3C7F43FF7011C3BFB2A1BF /* Recipe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Recipe.swift; sourceTree = "<group>"; };
 		AD5F455D6D9508BF4E78F8C2 /* FoundationChatApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoundationChatApp.swift; sourceTree = "<group>"; };
 		C8B7FDA9FB5884180E8DB68A /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
+		C9554E74DDD98A74B99A0E65 /* TranscriptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptView.swift; sourceTree = "<group>"; };
 		E6550B73B851CE08D5851CC6 /* OptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsView.swift; sourceTree = "<group>"; };
 		F64964234D930C557070BF52 /* FoundationChat.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = FoundationChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -46,6 +48,7 @@
 				6E3C7F43FF7011C3BFB2A1BF /* Recipe.swift */,
 				5F77F7F2FECC5BD26A8B3501 /* RecipeView.swift */,
 				5C6541389446D86361AF08E5 /* Tools.swift */,
+				C9554E74DDD98A74B99A0E65 /* TranscriptView.swift */,
 			);
 			path = FoundationChat;
 			sourceTree = "<group>";
@@ -124,6 +127,7 @@
 				956B303EF13D46F2B647A63C /* Recipe.swift in Sources */,
 				A185267C0746D8A887A2AE94 /* RecipeView.swift in Sources */,
 				9D2A1FFC3C87A119D0127423 /* Tools.swift in Sources */,
+				34E12E9A886B61BC5BA84FDD /* TranscriptView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

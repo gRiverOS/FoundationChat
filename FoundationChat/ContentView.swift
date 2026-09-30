@@ -3,6 +3,7 @@ import FoundationModels
 
 struct ContentView: View {
     @State private var vm = ChatViewModel()
+    @State private var showTranscript = false
 
     var body: some View {
         NavigationStack {
@@ -20,9 +21,19 @@ struct ContentView: View {
             }
             .navigationTitle("Foundation Chat")
             .toolbar {
-                Button("Nuevo", systemImage: "square.and.pencil") { vm.reset() }
-                    .disabled(vm.isResponding)
+                Menu("Sesión", systemImage: "ellipsis.circle") {
+                    Button("Ver transcript", systemImage: "list.bullet.rectangle") { showTranscript = true }
+                    Button("Simular contexto lleno", systemImage: "arrow.down.right.and.arrow.up.left") {
+                        Task { await vm.condenseContext() }
+                    }
+                    Button("Nueva conversación", systemImage: "square.and.pencil") { vm.reset() }
+                }
+                .disabled(vm.isResponding)
             }
+            .sheet(isPresented: $showTranscript) {
+                TranscriptView(transcript: vm.session.transcript)
+            }
+            .onAppear { vm.prewarm() }
         }
     }
 

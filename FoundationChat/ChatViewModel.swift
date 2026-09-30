@@ -27,7 +27,12 @@ final class ChatViewModel {
         LanguageModelSession(tools: [PantryTool(), DateTimeTool()], instructions: instructions)
     }
 
-    private var session = ChatViewModel.makeSession()
+    private(set) var session = ChatViewModel.makeSession()
+
+    /// Carga el modelo en memoria antes del primer prompt → menos latencia en la 1.ª respuesta.
+    func prewarm() {
+        session.prewarm()
+    }
 
     /// Estado del modelo on-device (Apple Intelligence debe estar activo).
     var availability: SystemLanguageModel.Availability {
@@ -50,11 +55,41 @@ final class ChatViewModel {
                 messages[index].text = snapshot.content
             }
         } catch LanguageModelSession.GenerationError.exceededContextWindowSize {
-            session = Self.makeSession()
-            messages[index].text = "⚠️ Se llenó el contexto; empecé una sesión nueva. Vuelve a preguntar."
+            // Contexto lleno: resumimos la conversación, abrimos una sesión nueva
+            // "sembrada" con ese resumen y reintentamos el mismo prompt.
+            await condenseContext()
+            do {
+                for try await snapshot in session.streamResponse(to: prompt) {
+                    messages[index].text = snapshot.content
+                }
+            } catch {
+                messages[index].text = "⚠️ Error tras resumir: \(error.localizedDescription)"
+            }
         } catch {
             messages[index].text = "⚠️ Error: \(error.localizedDescription)"
         }
+    }
+
+    /// Resume la conversación en una sesión aparte y crea una sesión nueva con ese resumen.
+    func condenseContext() async {
+        let history = messages
+            .filter { !$0.text.isEmpty }
+            .map { ($0.isUser ? "Usuario: " : "Asistente: ") + $0.text }
+            .joined(separator: "\n")
+
+        var summary = ""
+        if !history.isEmpty {
+            let summarizer = LanguageModelSession(
+                instructions: "Resume conversaciones en español en máximo 3 frases, conservando datos clave."
+            )
+            summary = (try? await summarizer.respond(to: history).content) ?? ""
+        }
+
+        let seeded = summary.isEmpty
+            ? Self.instructions
+            : Self.instructions + "\n\nResumen de la conversación anterior: " + summary
+        session = LanguageModelSession(tools: [PantryTool(), DateTimeTool()], instructions: seeded)
+        messages.append(Message(isUser: false, text: "🗜️ Contexto resumido: \(summary.isEmpty ? "(vacío)" : summary)"))
     }
 
     func reset() {
