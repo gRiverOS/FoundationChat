@@ -2,6 +2,8 @@
 
 App de práctica en SwiftUI para el curso **Getting Started with Apple Foundation Models** (Packt / Coursera). Usa el modelo de lenguaje on-device de Apple Intelligence (~3B parámetros) con el framework `FoundationModels`.
 
+Código oficial del curso (solo secciones 1 y 2, hecho con iOS 26): https://github.com/PacktPublishing/Getting-Started-with-Apple-Foundation-Models
+
 ## Requisitos
 
 - Mac con Apple Silicon, **macOS 26+** y Apple Intelligence activado
