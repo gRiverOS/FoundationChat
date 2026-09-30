@@ -64,6 +64,15 @@ final class ChatViewModel {
         }
     }
 
+    /// Resumen estructurado: extraer datos concretos funciona mejor que pedir texto libre.
+    @Generable
+    struct ConversationSummary {
+        @Guide(description: "Datos del usuario mencionados: nombre, dieta, gustos, alergias", .count(0...6))
+        var userFacts: [String]
+        @Guide(description: "Tema de la conversación en pocas palabras")
+        var topic: String
+    }
+
     /// Resume la conversación en una sesión aparte y crea una sesión nueva con ese resumen.
     func condenseContext() async {
         let history = messages
@@ -71,19 +80,25 @@ final class ChatViewModel {
             .map { ($0.isUser ? "Usuario: " : "Asistente: ") + $0.text }
             .joined(separator: "\n")
 
-        var summary = ""
+        var seeded = Self.instructions
+        var note = "(vacío)"
         if !history.isEmpty {
             let summarizer = LanguageModelSession(
-                instructions: "Resume conversaciones en español en máximo 3 frases, conservando datos clave."
+                instructions: "Extraes información de conversaciones. Responde en español."
             )
-            summary = (try? await summarizer.respond(to: history).content) ?? ""
+            // .greedy: el resumen debe ser estable, no creativo.
+            if let summary = try? await summarizer.respond(
+                to: history,
+                generating: ConversationSummary.self,
+                options: GenerationOptions(sampling: .greedy)
+            ).content {
+                let facts = summary.userFacts.joined(separator: "; ")
+                seeded += "\nDatos del usuario: \(facts). Tema previo: \(summary.topic)."
+                note = "datos = [\(facts)] · tema = \(summary.topic)"
+            }
         }
-
-        let seeded = summary.isEmpty
-            ? Self.instructions
-            : Self.instructions + "\n\nResumen de la conversación anterior: " + summary
         session = LanguageModelSession(tools: [PantryTool(), DateTimeTool()], instructions: seeded)
-        messages.append(Message(isUser: false, text: "🗜️ Contexto resumido: \(summary.isEmpty ? "(vacío)" : summary)"))
+        messages.append(Message(isUser: false, text: "🗜️ Contexto resumido: \(note)"))
     }
 
     func reset() {

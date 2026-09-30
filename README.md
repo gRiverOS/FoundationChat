@@ -100,7 +100,8 @@ Resultado real: greedy → 3 respuestas idénticas; top-k 40 + temp 2.0 → 3 di
 - `session.transcript` = memoria de la sesión (instructions, prompts, responses, tool calls/outputs). **Todo consume la ventana de contexto (~4K tokens).**
 - `session.prewarm()` al aparecer la pantalla → menos latencia en la 1.ª respuesta.
 - Al recibir `exceededContextWindowSize`: resumir la conversación con otra sesión, crear una sesión nueva con el resumen en sus instructions y reintentar el prompt (`condenseContext()`).
-- Mejora pendiente: resumir con `@Generable` (`userFacts`, `topic`) y conservar las últimas 2–3 interacciones tal cual.
+- El resumen usa `@Generable struct ConversationSummary { userFacts: [String]; topic: String }` con `.greedy`. Con texto libre ("resume en 3 frases") el modelo casi copió la última respuesta; con el struct extrajo `[Gustavo; vegetariano]` y tema "Recetas vegetarianas", y la sesión nueva respondió "Hola, Gustavo. Eres vegetariano." Extraer campos concretos es más confiable que pedir prosa a un modelo chico.
+- Mejora posible: conservar las últimas 2–3 interacciones tal cual además del resumen.
 
 ### 7. Guardrails y errores
 Todos los errores pasan por `ModelErrors.message(for:)` (`ModelErrors.swift`), que los traduce a mensajes claros.
@@ -139,6 +140,5 @@ Lecciones:
 - Para conclusiones serias: ~5 repeticiones por caso, idealmente en dispositivo físico.
 
 ## Pendiente
-- [ ] Despensa confiable: `Arguments {}` vacío en vez de depender del argumento
-- [ ] Resumen de contexto con `@Generable`
+- [ ] Despensa 100% repetible: `Arguments {}` vacío o `.greedy` (hoy acierta con la regla en el `@Guide`, pero el sampling es aleatorio)
 - [ ] Adapters
