@@ -77,7 +77,14 @@ session.streamResponse(to: prompt, generating: Recipe.self)  // → Recipe.Parti
 ```
 - El modelo devuelve structs tipados; no hay que parsear JSON.
 - En streaming llega `PartiallyGenerated` (propiedades opcionales) que se llena campo a campo.
-- Las propiedades se generan **en el orden declarado**.
+- Las propiedades se generan **en el orden declarado**. Esto permite un *chain-of-thought* estructurado: un campo de razonamiento o evidencia **antes** del resultado hace que el modelo "piense" primero y ancle la respuesta en el texto fuente:
+  ```swift
+  @Generable struct Summary {
+      @Guide(description: "Hechos clave extraídos del texto") var evidence: [String]  // primero
+      var summary: String                                                             // después
+  }
+  ```
+  Costo: más tokens (ventana ~4K) y más latencia.
 
 ### 4. Tool calling
 ```swift
@@ -119,6 +126,10 @@ session.respond(to: prompt, options: options)
 | Ideas, nombres, brainstorming | temperature 1.2+ |
 
 Resultado real: greedy → 3 respuestas idénticas; top-k 40 + temp 2.0 → 3 distintas.
+
+**Config por request, no global:** `GenerationOptions` se pasa en cada `respond(to:options:)`. Un ajuste global (p. ej. temperature 0.9 para todo) contamina tareas que necesitan precisión, como extraer datos, y es frágil con requests concurrentes.
+
+**Receta para resumir documentos:** temperature baja o `.greedy`; el largo se pide en el prompt ("en 3 viñetas") y `maximumResponseTokens` es solo un tope de seguridad; en las instructions, "usa solo información del texto"; documentos largos → dividir en partes, resumir cada una y luego resumir los resúmenes.
 
 **Rango de temperature:** en la beta de iOS 26 (la del curso) había que usar valores entre 0 y 1, y 1.2 daba error. En iOS/macOS 27 funcionan 1.2 y 2.0 sin error (probado). iOS 27 además agrega `toolCallingMode` en `GenerationOptions`.
 
@@ -169,4 +180,5 @@ Lecciones:
 
 ## Pendiente
 - [ ] Despensa 100% repetible: `Arguments {}` vacío o `.greedy` (hoy acierta con la regla en el `@Guide`, pero el sampling es aleatorio)
+- [ ] Probar chain-of-thought estructurado (`evidence` antes de `summary`) y medir su costo en tokens
 - [ ] Adapters
