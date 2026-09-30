@@ -47,6 +47,16 @@ for try await snapshot in session.streamResponse(to: prompt) {
 }
 ```
 - **Instructions** (reglas del desarrollador) ≠ **prompt** (lo que pide el usuario).
+- **Single-turn vs multi-turn:** sesión nueva por pregunta = sin memoria (pestaña Opciones, resumen de contexto); misma sesión reutilizada = recuerda (Chat, sesión como propiedad del view model). Prueba real con `.greedy`:
+
+  | Seguimiento a "¿Dónde viven los pingüinos?" | Single-turn | Multi-turn |
+  |---|---|---|
+  | "¿Vuelan?" | "No vuelan." (acierta por suerte) | "No vuelan, ya que tienen adaptaciones para nadar…" |
+  | "¿Cuál es la especie más grande?" | "El elefante africano." ❌ | "El pingüino emperador." ✅ |
+
+  Para probar memoria, usar un seguimiento donde adivinar no sirva.
+- **Prompts específicos:** "Háblame de perros" → párrafo genérico que se corta; "Escribe tres frases que describan la raza Husky Siberiano" → exactamente 3 frases numeradas. Tareas complejas → varios prompts específicos.
+- En SwiftUI, llamar al modelo desde `.task` (no `.onAppear`), y **solo cuando está disponible**: si el `.task` va en el contenedor del `switch` de disponibilidad, corre igual cuando el modelo no está. Con `AvailabilityGate` el contenido (y su `.task`) solo existe si está disponible.
 - Una sesión atiende **un request a la vez** → revisar `isResponding`.
 - Consumir el stream desde un view model `@MainActor` → UI segura sin bloquear.
 
