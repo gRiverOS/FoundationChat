@@ -1,0 +1,18 @@
+name: FoundationChat
+options:
+  bundleIdPrefix: com.gustavo
+  deploymentTarget:
+    iOS: "26.0"
+targets:
+  FoundationChat:
+    type: application
+    platform: iOS
+    sources: [FoundationChat]
+    settings:
+      base:
+        SWIFT_VERSION: "6.0"
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.gustavo.FoundationChat
+        DEVELOPMENT_TEAM: AHG445RV5X
+        CODE_SIGN_STYLE: Automatic
