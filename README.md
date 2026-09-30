@@ -4,6 +4,8 @@ App de práctica en SwiftUI para el curso **Getting Started with Apple Foundatio
 
 Código oficial del curso (solo secciones 1 y 2, hecho con iOS 26): https://github.com/PacktPublishing/Getting-Started-with-Apple-Foundation-Models
 
+Repaso para el examen final (ficha + 20 preguntas de práctica): https://claude.ai/artifact/DSMSy3KdYXqzwUWUHq7bXM (privado)
+
 ## Requisitos
 
 - Mac con Apple Silicon, **macOS 26+** y Apple Intelligence activado
@@ -63,6 +65,8 @@ for try await snapshot in session.streamResponse(to: prompt) {
 - Consumir el stream desde un view model `@MainActor` → UI segura sin bloquear.
 
 ### 3. Guided generation (`@Generable`)
+**Salida tipada:** en vez de un `String` que hay que interpretar (o un JSON que puede salir mal formado), el modelo entrega una instancia de tu struct con tipos de Swift (`Int`, `String`, arreglos, enums). El framework restringe los tokens mientras genera, así que un campo `Int` con `.range(5...180)` no puede recibir "media hora", y un enum solo acepta sus casos. Se usa en `Recipe`, en los `Arguments` de las tools y en `ConversationSummary`.
+
 ```swift
 @Generable struct Recipe {
     @Guide(description: "Minutos totales", .range(5...180)) var minutes: Int
