@@ -15,13 +15,7 @@ final class ChatViewModel {
     var input = ""
     var isResponding = false
 
-    static let instructions = """
-        Eres un asistente de cocina amable. Responde en español, de forma breve y clara.
-        Cuando el usuario pregunte qué cocinar o qué ingredientes tiene, llama de inmediato \
-        a consultarDespensa con categoria "todo". No le preguntes al usuario; consulta primero \
-        y luego sugiere una receta concreta usando esos ingredientes.
-        Si necesitas saber la fecha u hora, llama a fechaHoraActual sin preguntar.
-        """
+    static let instructions = "Asistente de cocina. Responde en español, breve."
 
     static func makeSession() -> LanguageModelSession {
         LanguageModelSession(tools: [PantryTool(), DateTimeTool()], instructions: instructions)

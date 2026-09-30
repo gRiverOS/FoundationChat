@@ -5,11 +5,11 @@ import FoundationModels
 // y genera `Arguments` con guided generation (por eso es @Generable).
 struct PantryTool: Tool {
     let name = "consultarDespensa"
-    let description = "Devuelve los ingredientes que el usuario tiene en su despensa. Úsala siempre antes de sugerir qué cocinar."
+    let description = "Ingredientes del usuario. Úsala antes de sugerir qué cocinar."
 
     @Generable
     struct Arguments {
-        @Guide(description: "Categoría a consultar. Usa todo si el usuario no especifica.")
+        @Guide(description: "Usa todo si no se especifica")
         var categoria: Categoria
     }
 
@@ -35,7 +35,7 @@ struct PantryTool: Tool {
 
 struct DateTimeTool: Tool {
     let name = "fechaHoraActual"
-    let description = "Entrega la fecha y hora actual del dispositivo."
+    let description = "Fecha y hora actual."
 
     @Generable
     struct Arguments {}
