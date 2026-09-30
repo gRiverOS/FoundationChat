@@ -63,7 +63,7 @@ struct RecipeView: View {
                 recipe = snapshot.content
             }
         } catch {
-            errorText = "Error: \(error.localizedDescription)"
+            errorText = ModelErrors.message(for: error)
         }
     }
 }

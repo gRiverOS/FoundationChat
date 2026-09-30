@@ -48,4 +48,6 @@ git -c credential.helper= -c 'credential.helper=!gh auth git-credential' push
 
 `Tools.swift`: las tools corren fuera del main actor; reportan a `ToolLog.shared` (singleton `@MainActor`) con `await`, y `ContentView` lo muestra bajo el chat.
 
+Errores: todo `catch` de llamadas al modelo usa `ModelErrors.message(for:)` y, para el overflow de contexto, `ModelErrors.isContextOverflow(_:)`. iOS 27 lanza `LanguageModelError` en vez de `LanguageModelSession.GenerationError`; `ModelErrors.swift` maneja ambos, no hacer `catch` directo sobre casos de `GenerationError`.
+
 Las instructions y descriptions están en español. El modelo es chico (~3B): no confiar en el prompt para restricciones duras (eligió un argumento de enum equivocado pese a instrucciones explícitas); restringir en código con `@Generable`/`@Guide`.

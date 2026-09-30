@@ -10,6 +10,7 @@
 		34E12E9A886B61BC5BA84FDD /* TranscriptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9554E74DDD98A74B99A0E65 /* TranscriptView.swift */; };
 		3A61A7D472BC9B4575EB5770 /* OptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6550B73B851CE08D5851CC6 /* OptionsView.swift */; };
 		3ABB86BB5D905099CCD14969 /* FoundationChatApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5F455D6D9508BF4E78F8C2 /* FoundationChatApp.swift */; };
+		71B7D0BAB03A6A50DE2A1DE6 /* ModelErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 106EBF0FB7236CFA98D20F04 /* ModelErrors.swift */; };
 		903F350C8D8E4E1C3099F917 /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B7FDA9FB5884180E8DB68A /* ChatViewModel.swift */; };
 		956B303EF13D46F2B647A63C /* Recipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3C7F43FF7011C3BFB2A1BF /* Recipe.swift */; };
 		9D2A1FFC3C87A119D0127423 /* Tools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6541389446D86361AF08E5 /* Tools.swift */; };
@@ -18,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		106EBF0FB7236CFA98D20F04 /* ModelErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelErrors.swift; sourceTree = "<group>"; };
 		4991484D6B9355E1AA252A86 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		5C6541389446D86361AF08E5 /* Tools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tools.swift; sourceTree = "<group>"; };
 		5F77F7F2FECC5BD26A8B3501 /* RecipeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeView.swift; sourceTree = "<group>"; };
@@ -44,6 +46,7 @@
 				C8B7FDA9FB5884180E8DB68A /* ChatViewModel.swift */,
 				4991484D6B9355E1AA252A86 /* ContentView.swift */,
 				AD5F455D6D9508BF4E78F8C2 /* FoundationChatApp.swift */,
+				106EBF0FB7236CFA98D20F04 /* ModelErrors.swift */,
 				E6550B73B851CE08D5851CC6 /* OptionsView.swift */,
 				6E3C7F43FF7011C3BFB2A1BF /* Recipe.swift */,
 				5F77F7F2FECC5BD26A8B3501 /* RecipeView.swift */,
@@ -123,6 +126,7 @@
 				903F350C8D8E4E1C3099F917 /* ChatViewModel.swift in Sources */,
 				9F0BAE2FD2E6B02439404C01 /* ContentView.swift in Sources */,
 				3ABB86BB5D905099CCD14969 /* FoundationChatApp.swift in Sources */,
+				71B7D0BAB03A6A50DE2A1DE6 /* ModelErrors.swift in Sources */,
 				3A61A7D472BC9B4575EB5770 /* OptionsView.swift in Sources */,
 				956B303EF13D46F2B647A63C /* Recipe.swift in Sources */,
 				A185267C0746D8A887A2AE94 /* RecipeView.swift in Sources */,

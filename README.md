@@ -92,11 +92,17 @@ Resultado real: greedy → 3 respuestas idénticas; top-k 40 + temp 2.0 → 3 di
 - Al recibir `exceededContextWindowSize`: resumir la conversación con otra sesión, crear una sesión nueva con el resumen en sus instructions y reintentar el prompt (`condenseContext()`).
 - Mejora pendiente: resumir con `@Generable` (`userFacts`, `topic`) y conservar las últimas 2–3 interacciones tal cual.
 
-### 7. Errores a manejar
-`exceededContextWindowSize`, `guardrailViolation`, `unsupportedLanguageOrLocale`, `rateLimited`, `assetsUnavailable`. Nota: crear la sesión no lanza; lanzan `respond` / `streamResponse`.
+### 7. Guardrails y errores
+Todos los errores pasan por `ModelErrors.message(for:)` (`ModelErrors.swift`), que los traduce a mensajes claros.
+
+⚠️ **iOS 27 cambió el tipo de error.** iOS 26 lanza `LanguageModelSession.GenerationError`; iOS 27 lanza el nuevo `LanguageModelError` (`guardrailViolation`, `refusal`, `contextSizeExceeded`, `rateLimited`, `timeout`, `unsupportedLanguageOrLocale`, …). Hay que manejar ambos con `#available(iOS 27, *)`. Un `catch GenerationError.exceededContextWindowSize` **no atrapa** el overflow en iOS 27 → usar `ModelErrors.isContextOverflow(_:)`.
+
+- **Guardrail** (`guardrailViolation`): los filtros de seguridad de Apple bloquean el prompt o la respuesta. La sesión sigue usable después.
+- **Refusal**: el modelo decide no responder (distinto del guardrail).
+- Errores lanzados dentro de una tool llegan envueltos en `LanguageModelSession.ToolCallError`.
+- Crear la sesión no lanza; lanzan `respond` / `streamResponse`.
 
 ## Pendiente
-- [ ] Guardrails y mensajes de error claros (hoy se ve "error -1")
 - [ ] Despensa confiable: `Arguments {}` vacío en vez de depender del argumento
 - [ ] Resumen de contexto con `@Generable`
 - [ ] Medir rendimiento con Instruments (plantilla Foundation Models)

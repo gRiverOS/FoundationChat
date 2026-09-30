@@ -84,7 +84,7 @@ struct OptionsView: View {
                 let response = try await session.respond(to: prompt, options: options)
                 results.append(response.content)
             } catch {
-                results.append("⚠️ \(error.localizedDescription)")
+                results.append(ModelErrors.message(for: error))
             }
         }
     }

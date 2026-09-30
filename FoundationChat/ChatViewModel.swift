@@ -54,7 +54,7 @@ final class ChatViewModel {
             for try await snapshot in session.streamResponse(to: prompt) {
                 messages[index].text = snapshot.content
             }
-        } catch LanguageModelSession.GenerationError.exceededContextWindowSize {
+        } catch where ModelErrors.isContextOverflow(error) {
             // Contexto lleno: resumimos la conversación, abrimos una sesión nueva
             // "sembrada" con ese resumen y reintentamos el mismo prompt.
             await condenseContext()
@@ -63,10 +63,10 @@ final class ChatViewModel {
                     messages[index].text = snapshot.content
                 }
             } catch {
-                messages[index].text = "⚠️ Error tras resumir: \(error.localizedDescription)"
+                messages[index].text = ModelErrors.message(for: error)
             }
         } catch {
-            messages[index].text = "⚠️ Error: \(error.localizedDescription)"
+            messages[index].text = ModelErrors.message(for: error)
         }
     }
 
